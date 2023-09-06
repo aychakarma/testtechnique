@@ -1,0 +1,34 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+  <meta charset="UTF-8">
+  <title>Graphique des arbres</title>
+  <script th:src="@{/webjars/chartjs/3.7.0/dist/chart.min.js}"></script>
+</head>
+<body>
+<canvas id="myChart" width="400" height="400"></canvas>
+<script>
+  var ctx = document.getElementById('myChart').getContext('2d');
+
+  // Vous devez obtenir les données de votre base de données pour le graphique.
+  // Supposons que vous ayez une liste d'arbres avec une circonférence en cm.
+  var arbresData = /* Récupérez vos données ici, par exemple, en utilisant Thymeleaf */;
+
+  var labels = [];
+  var circonfrences = [];
+
+  // Parcourez vos données pour extraire les étiquettes et les valeurs.
+  for (var i = 0; i < arbresData.length; i++) {
+    labels.push(arbresData[i].arbres_domanialite); // Utilisez l'attribut que vous souhaitez afficher.
+    circonfrences.push(arbresData[i].arbres_arrondissement); // Utilisez l'attribut que vous souhaitez afficher.
+  }
+
+  var myChart = new Chart(ctx, {
+    type: 'bar', // Choisissez le type de graphique (bar, line, pie, etc.)
+    data: {
+      labels: labels,
+      datasets: [{
+        label: 'Circonférence des arbres en cm',
+        data: circonfrences,
+        backgroundColor: 'rgba(75, 192, 192, 0.2)', // Couleur de remplissage du graphique
+        borderColor: 'rgba(75, 192, 192, 1)', // Couleur de la bordure du graphique

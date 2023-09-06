@@ -1,0 +1,110 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="UTF-8">
+  <title>Courbe Affectation des Equipes à nos agriculteurs</title>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.9.4/Chart.min.js"> //bibliothéque chart.js pour créer la courbe  </script>
+  <style>
+    body {
+      background-color: #f5f5f5;
+      font-family: Arial, sans-serif;
+    }
+    #chart-container {
+      background-color: #fff;
+      border-radius: 10px;
+      box-shadow: 0px 0px 10px #aaa;
+      margin: 20px auto;
+      max-width: 970px;
+      padding: 20px;
+    }
+    h2 {
+      text-align: center;
+    }
+  </style>
+</head>
+<body>
+<div id="chart-container">
+  <h2>Courbe Affectation des Equipes à nos agriculteurs</h2>
+  <canvas id="myChart"></canvas>
+</div>
+
+<script>
+  // Récupération des données depuis le serveur
+  fetch('/test-stat')  // récupere les donnes du serveur
+          .then(response => response.json()) //convertir la réponse en objet javascript en appellant json
+          .then(data => {
+            // Préparation des données pour la courbe clé valeur
+            const labels = []
+            const usernames = []
+            const datasets = {}
+            const colors = {}
+            data.forEach(entry => {  ///lier username w equipe
+              const [username, equipe] = Object.entries(entry)[0] //extraite username et equipe
+              if (!(username in colors)) { // ken user déja andi couleur maa equipe sinon new color
+                colors[username] = getRandomColor()
+              }
+              if (!(equipe in datasets)) { //ken equipe fel datasets donc teb3a user eli choufneh donc nafs loun //vérifie si equipe mawjouda wala le
+                datasets[equipe] = { label: equipe, data: [], backgroundColor: colors[username], borderColor: colors[username] }
+              }
+              datasets[equipe].data.push(usernames.indexOf(username) === -1 ? usernames.push(username) && usernames.length - 1 : usernames.indexOf(username))
+              if (datasets[equipe].data.length > 1) {
+                labels.push(equipe)
+              }
+            })
+
+            // Création de la courbe //génrer couleurs aléatoires graphique de type line
+            const ctx = document.getElementById('myChart').getContext('2d');
+            const chart = new Chart(ctx, {
+              type: 'line',
+              data: {
+                labels,
+                datasets: Object.values(datasets),
+              },
+              options: {
+                scales: {
+                  yAxes: [{
+                    ticks: {
+                      beginAtZero: true,
+                      callback: function(value, index, values) {
+                        return usernames[value]; //nom users stockés lehné
+                      }
+                    },
+                    scaleLabel: {
+                      display: true,
+                      labelString: 'Nom Utilisateur et Affectation'
+                    }
+                  }],
+                  xAxes: [{
+                    scaleLabel: {
+                      display: true,
+                      labelString: 'Equipes'
+                    }
+                  }]
+                },
+                tooltips: {
+                  callbacks: {
+                    label: function(tooltipItem, data) {
+                      const dataset = data.datasets[tooltipItem.datasetIndex];
+                      const username = usernames[tooltipItem.yLabel];
+                      return dataset.label + ': ' + username;
+                    }
+                  }
+                }
+              }
+            });
+
+            // Fonction pour générer une couleur aléatoire
+            function getRandomColor() {
+              const letters = '0123456789ABCDEF';
+              let color = '#';
+              for (let i = 0; i < 6; i++) {
+                color += letters[Math.floor(Math.random() * 16)]; //génrer couleur aléatoires a 6 chiffres
+              }
+              return color;
+            }
+
+          });
+
+</script>
+</body>
+</html>

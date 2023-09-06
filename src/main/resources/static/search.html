@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Recherche Arbres</title>
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f2f2f2;
+            margin: 0;
+            padding: 0;
+        }
+
+        h1 {
+            text-align: center;
+            color: #333;
+            margin-top: 30px;
+        }
+
+        #arbresDomanialite {
+            display: block;
+            margin: 30px auto;
+            width: 300px;
+            height: 30px;
+            font-size: 16px;
+            padding: 10px;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+        }
+
+        #results {
+            list-style: none;
+            margin: 0;
+            padding: 0;
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+        }
+
+        #results li {
+            background-color: #fff;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+            box-shadow: 0 2px 2px rgba(0, 0, 0, 0.1);
+            color: #333;
+            display: block;
+            font-size: 16px;
+            margin: 10px;
+            padding: 10px;
+            text-align: center;
+            min-width: 150px;
+        }
+
+        #results li:hover {
+            cursor: pointer;
+            background-color: #f5f5f5;
+        }
+
+        #results li:active {
+            background-color: #e6e6e6;
+        }
+    </style>
+</head>
+<body>
+<h1>Recherche arbres</h1>
+<input type="text" id="nomEquipe" placeholder="Saisissez le nom de votre arbre">
+<ul id="results"></ul>
+<script>
+    $(document).ready(function() {
+        // Recherche dynamique des arbres
+        $('#nomEquipe').on('input', function() { // Écoute les changements dans le champ de recherche
+            var inputVal = $(this).val(); // Récupère la valeur actuelle du champ de recherche
+            $.ajax({
+                url: '/equipes', // L'URL doit être la bonne URL pour récupérer les arbres
+                data: { arbresDomanialite: inputVal },
+                cache: false,
+                success: function(data) {
+                    $('#results').empty(); // Vide la liste des résultats précédents
+                    $.each(data, function(index, arbres) {
+                        var item = $('<li>').text(arbres.arbresDomanialite);
+                        $('#results').append(item); // Ajoute chaque résultat à la liste
+                    });
+                }
+            });
+        });
+    });
+</script>
+</body>
+</html>
