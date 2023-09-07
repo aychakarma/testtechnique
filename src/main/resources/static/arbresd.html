@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Densité des Arbres par Quartier</title>
+  <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+</head>
+<body>
+<h1>Densité des Arbres par Quartier</h1>
+
+<button id="calculateDensityBtn">Calculer la Densité</button>
+
+<!-- Canvas pour le graphique à barres -->
+<canvas id="densityChart" width="400" height="200"></canvas>
+
+<script>
+  $(document).ready(function() {
+    $("#calculateDensityBtn").click(function() {
+      $.ajax({
+        url: '/arbres-density', // Endpoint pour calculer la densité
+        method: 'GET',
+        success: function(quartierDensityMap) {
+          // Récupérez les noms des quartiers et les densités
+          var quartiers = Object.keys(quartierDensityMap);
+          var densites = Object.values(quartierDensityMap);
+
+          // Récupérez l'élément canvas et créez le contexte 2D
+          var canvas = document.getElementById("densityChart");
+          var ctx = canvas.getContext("2d");
+
+          // Créez le graphique à barres en utilisant Chart.js
+          var densityChart = new Chart(ctx, {
+            type: 'bar', // Type de graphique : barres
+            data: {
+              labels: quartiers, // Noms des quartiers en tant qu'étiquettes
+              datasets: [{
+                label: 'Densité', // Légende du graphique
+                data: densites, // Densités par quartier
+                backgroundColor: 'rgba(75, 192, 192, 0.2)', // Couleur de remplissage des barres
+                borderColor: 'rgba(75, 192, 192, 1)', // Couleur des bordures des barres
+                borderWidth: 1 // Largeur des bordures des barres
+              }]
+            },
+            options: {
+              scales: {
+                y: {
+                  beginAtZero: true,
+                  title: {
+                    display: true,
+                    text: 'Densité' // Titre de l'axe Y
+                  }
+                },
+                x: {
+                  title: {
+                    display: true,
+                    text: 'Quartier' // Titre de l'axe X
+                  }
+                }
+              }
+            }
+          });
+        },
+        error: function() {
+          alert("Erreur lors du calcul de la densité.");
+        }
+      });
+    });
+  });
+</script>
+</body>
+</html>

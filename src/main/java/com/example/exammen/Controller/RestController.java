@@ -11,6 +11,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 
 import java.lang.reflect.Array;
 import java.util.List;
+import java.util.Map;
 
 @org.springframework.web.bind.annotation.RestController
 @AllArgsConstructor
@@ -55,5 +56,28 @@ public class RestController {
     @GetMapping("/equipes")
     public List<Arbres> chercherParNom(@RequestParam("arbresDomanialite") String arbresDomanialite) {
         return i.findByArbresDomanialiteContaining(arbresDomanialite);
+    }
+    @GetMapping("/circonf-data")
+    public List<Float> getCirconfData() {
+        return i.getCirconfDataFromDatabase();
+    }
+
+    @GetMapping("/age-data")
+    public List<Integer> getAgeData() {
+        return i.getAgeDataFromDatabase();
+    }
+
+    @GetMapping("/correlation")
+    public double calculateCorrelation() {
+        List<Float> circonfData = i.getCirconfDataFromDatabase();
+        List<Integer> ageData = i.getAgeDataFromDatabase();
+
+        return i.calculateCorrelation(circonfData, ageData);
+    }
+    @GetMapping("/arbres-density")
+    public String calculateArbresDensityByQuartier(Model model) {
+        Map<String, Double> quartierDensityMap = i.calculateArbresDensityByQuartier();
+        model.addAttribute("quartierDensityMap", quartierDensityMap);
+        return "arbresd"; // Ceci correspondra au nom du fichier HTML (arbres-density.html)
     }
 }

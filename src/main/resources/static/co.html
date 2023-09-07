@@ -1,0 +1,115 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="UTF-8">
+  <title>Corrélation entre Circonférence et Âge des Arbres</title>
+  <!-- Incluez Chart.js -->
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  <!-- Incluez jQuery -->
+  <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+</head>
+<body>
+<h1>Corrélation entre Circonférence et Âge des Arbres</h1>
+
+<!-- Bouton pour déclencher le calcul de corrélation et l'affichage du graphique -->
+<button id="calculateCorrelationBtn">Calculer la Corrélation</button>
+
+<!-- Div pour afficher le résultat de la corrélation -->
+<div id="correlationResult"></div>
+
+<!-- Canvas pour le graphique de corrélation -->
+<canvas id="correlationChart" width="400" height="200"></canvas>
+
+<script>
+  $(document).ready(function() {
+    // Écoute le clic sur le bouton "Calculer la Corrélation"
+    $("#calculateCorrelationBtn").click(function() {
+      $.ajax({
+        url: '/correlation', // Endpoint pour calculer la corrélation
+        method: 'GET',
+        success: function(correlationValue) {
+          // Appel réussi, obtenez les données de circonférence et d'âge
+          $.ajax({
+            url: '/circonf-data', // Endpoint pour obtenir les données de circonférence
+            method: 'GET',
+            success: function(circonfData) {
+              // Appel réussi, obtenez les données d'âge
+              $.ajax({
+                url: '/age-data', // Endpoint pour obtenir les données d'âge
+                method: 'GET',
+                success: function(ageData) {
+                  // Appel réussi, créez le graphique de corrélation
+                  createCorrelationChart(circonfData, ageData, correlationValue);
+                },
+                error: function() {
+                  // En cas d'erreur, affichez un message d'erreur
+                  $("#correlationResult").html("Erreur lors de la récupération des données d'âge.");
+                }
+              });
+            },
+            error: function() {
+              // En cas d'erreur, affichez un message d'erreur
+              $("#correlationResult").html("Erreur lors de la récupération des données de circonférence.");
+            }
+          });
+        },
+        error: function() {
+          // En cas d'erreur, affichez un message d'erreur
+          $("#correlationResult").html("Erreur lors du calcul de la corrélation.");
+        }
+      });
+    });
+
+    // Fonction pour créer le graphique de corrélation
+    function createCorrelationChart(circonfData, ageData, correlationValue) {
+      // Récupérez l'élément canvas et créez le contexte 2D
+      const canvas = document.getElementById("correlationChart");
+      const ctx = canvas.getContext("2d");
+
+      // Créez le graphique de corrélation en utilisant Chart.js
+      const correlationChart = new Chart(ctx, {
+        type: 'line', // Type de graphique : ligne
+        data: {
+          labels: circonfData.map((value, index) => index + 1), // Créez des labels pour les données
+          datasets: [
+            {
+              label: 'Circonférence', // Légende de la ligne de circonférence
+              borderColor: 'rgba(75, 192, 192, 1)', // Couleur de la ligne
+              data: circonfData, // Données de circonférence
+              fill: false, // Ne pas remplir la zone sous la ligne
+            },
+            {
+              label: 'Âge', // Légende de la ligne d'âge
+              borderColor: 'rgba(255, 99, 132, 1)', // Couleur de la ligne
+              data: ageData, // Données d'âge
+              fill: false, // Ne pas remplir la zone sous la ligne
+            },
+          ],
+        },
+        options: {
+          scales: {
+            y: {
+              beginAtZero: true,
+              title: {
+                display: true,
+                text: 'Valeurs', // Titre de l'axe Y
+              },
+            },
+            x: {
+              title: {
+                display: true,
+                text: 'Échantillons', // Titre de l'axe X
+              },
+            },
+          },
+        },
+      });
+
+      // Affichez la valeur de corrélation
+      const correlationResult = document.getElementById("correlationResult");
+      correlationResult.innerHTML = `Corrélation : ${correlationValue.toFixed(2)}`;
+    }
+  });
+</script>
+</body>
+</html>
