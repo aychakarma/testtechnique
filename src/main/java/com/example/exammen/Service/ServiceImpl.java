@@ -7,6 +7,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.apache.commons.math3.stat.correlation.PearsonsCorrelation;
 
+import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -80,6 +81,19 @@ public class ServiceImpl implements  IService{
         return arrondissementDensityMap;
     }
 
+    @Override
+    public Arbres ajouteraa(Arbres c) {
+        // Ajoutez la logique de validation ou de traitement si nécessaire
+        return arbrerepo.save(c);
+    }
 
+    @Override
+    public void deleteArbreByArbresIdbase(BigDecimal arbresIdbase) {
+        arbrerepo.deleteById(arbresIdbase);
+    }
+
+    public List<Object[]> countArbresByEspece() {
+        return arbrerepo.countArbresByEspece();
+    }
 
 }

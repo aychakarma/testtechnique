@@ -4,12 +4,13 @@ package com.example.exammen.Controller;
 import com.example.exammen.Entities.Arbres;
 import com.example.exammen.Service.IService;
 import lombok.AllArgsConstructor;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.*;
 
 import java.lang.reflect.Array;
+import java.math.BigDecimal;
 import java.util.List;
 import java.util.Map;
 
@@ -79,5 +80,22 @@ public class RestController {
         Map<String, Double> quartierDensityMap = i.calculateArbresDensityByQuartier();
         model.addAttribute("quartierDensityMap", quartierDensityMap);
         return "arbresd"; // Ceci correspondra au nom du fichier HTML (arbres-density.html)
+    }
+
+    @PostMapping("/ajouter")
+    public ResponseEntity<Arbres> ajouterArbre(@RequestBody Arbres arbre) {
+        Arbres arbreAjoute = i.ajouteraa(arbre);
+        return ResponseEntity.status(HttpStatus.CREATED).body(arbreAjoute);
+    }
+    @DeleteMapping("/delete/{arbresIdbase}")
+    public ResponseEntity<String> deleteArbreByArbresIdbase(@PathVariable BigDecimal arbresIdbase) {
+        i.deleteArbreByArbresIdbase(arbresIdbase);
+        return ResponseEntity.ok("L'arbre avec l'arbresIdbase " + arbresIdbase + " a été supprimé avec succès.");
+    }
+    @GetMapping("/distribution-especes")
+    public String distributionEspeces(Model model) {
+        List<Object[]> especesCount = i.countArbresByEspece();
+        model.addAttribute("especesCount", especesCount);
+        return "dis"; // Nom de la vue HTML
     }
 }

@@ -21,5 +21,10 @@ public interface ArbresRepository  extends JpaRepository<Arbres,BigDecimal>{
     @Query("SELECT YEAR(a.arbresDateplantation) FROM Arbres a")
     List<Integer> getAgeDataFromDatabase();
 
+    // Compte les arbres par espèce
+    @Query("SELECT arbres.arbresEspece, COUNT(arbres) FROM Arbres arbres GROUP BY arbres.arbresEspece")
+    List<Object[]> countArbresByEspece();
+
+
 
 }

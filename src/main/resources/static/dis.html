@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Distribution des Espèces d'Arbres</title>
+  <!-- Inclure les dépendances Chart.js -->
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+</head>
+<body>
+<h1>Distribution des Espèces d'Arbres</h1>
+
+<!-- Ajouter un conteneur pour le graphique (sera affiché après l'appel) -->
+<div style="width: 80%; margin: 0 auto;">
+  <canvas id="especesChart" width="400" height="200"></canvas>
+</div>
+
+<!-- Inclure le script JavaScript pour déclencher l'appel AJAX au chargement de la page -->
+<script>
+  // Attendre que le document soit prêt
+  document.addEventListener("DOMContentLoaded", function() {
+    // Effectuer un appel AJAX pour récupérer les données du contrôleur
+    fetch('/distribution-especes')
+            .then(response => response.json())
+            .then(data => {
+              // Utiliser les données pour générer le graphique (vous devrez implémenter cette partie)
+              generateChart(data);
+            })
+            .catch(error => {
+              console.error('Erreur lors de la récupération des données :', error);
+            });
+  });
+
+  // Fonction pour générer le graphique (à implémenter)
+  function generateChart(data) {
+    // Utilisez les données pour créer le graphique en utilisant Chart.js
+    // ...
+  }
+</script>
+</body>
+</html>
