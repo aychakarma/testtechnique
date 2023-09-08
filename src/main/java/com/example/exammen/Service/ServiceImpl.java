@@ -12,6 +12,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 @Service
 @AllArgsConstructor
@@ -96,4 +97,23 @@ public class ServiceImpl implements  IService{
         return arbrerepo.countArbresByEspece();
     }
 
+    @Override
+    public List<Arbres> getAllGenresAndPhotos() {
+        return arbrerepo.findAll();
+    }
+
+    @Override
+    public List<String> getAllGenres() {
+        return getAllArbres().stream()
+                .map(Arbres::getArbresGenre)
+                .distinct()
+                .collect(Collectors.toList());
+    }
+
+    @Override
+    public List<Long> getCountByGenre() {
+        return getAllGenres().stream()
+                .map(genre -> arbrerepo.countByArbresGenre(genre))
+                .collect(Collectors.toList());
+    }
 }

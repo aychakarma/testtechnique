@@ -10,9 +10,10 @@ import java.text.DecimalFormat;
 import java.util.List;
 
 @Repository
-public interface ArbresRepository  extends JpaRepository<Arbres,BigDecimal>{
+public interface ArbresRepository  extends JpaRepository<Arbres,BigDecimal> {
 
     List<Arbres> findByArbresDomanialite(String arbresDomanialite);
+
     List<Arbres> findByArbresDomanialiteContaining(String arbresDomanialite);
 
     @Query("SELECT a.arbresCirconferenceencm FROM Arbres a")
@@ -26,5 +27,5 @@ public interface ArbresRepository  extends JpaRepository<Arbres,BigDecimal>{
     List<Object[]> countArbresByEspece();
 
 
-
+    long countByArbresGenre(String genre);
 }

@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="UTF-8">
+  <title>Densité des Arbres par Arrondissement</title>
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+</head>
+<body>
+<h1>Densité des Arbres par Arrondissement</h1>
+
+<!-- Canvas pour le graphique à barres -->
+<canvas id="densityChart" width="400" height="200"></canvas>
+
+<script>
+  $(document).ready(function() {
+    $.ajax({
+      url: '/arbres-density', // Endpoint pour récupérer la densité des arbres par arrondissement
+      method: 'GET',
+      success: function(data) {
+        var arrondissements = Object.keys(data);
+        var densites = Object.values(data);
+
+        var ctx = document.getElementById("densityChart").getContext("2d");
+
+        var densityChart = new Chart(ctx, {
+          type: 'bar',
+          data: {
+            labels: arrondissements,
+            datasets: [{
+              label: 'Densité',
+              data: densites,
+              backgroundColor: 'rgba(75, 192, 192, 0.2)',
+              borderColor: 'rgba(75, 192, 192, 1)',
+              borderWidth: 1
+            }]
+          },
+          options: {
+            scales: {
+              y: {
+                beginAtZero: true,
+                title: {
+                  display: true,
+                  text: 'Densité'
+                }
+              },
+              x: {
+                title: {
+                  display: true,
+                  text: 'Arrondissement'
+                }
+              }
+            }
+          }
+        });
+      },
+      error: function() {
+        alert("Erreur lors du chargement des données de densité.");
+      }
+    });
+  });
+</script>
+</body>
+</html>

@@ -11,6 +11,7 @@ import org.springframework.web.bind.annotation.*;
 
 import java.lang.reflect.Array;
 import java.math.BigDecimal;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -76,10 +77,9 @@ public class RestController {
         return i.calculateCorrelation(circonfData, ageData);
     }
     @GetMapping("/arbres-density")
-    public String calculateArbresDensityByQuartier(Model model) {
-        Map<String, Double> quartierDensityMap = i.calculateArbresDensityByQuartier();
-        model.addAttribute("quartierDensityMap", quartierDensityMap);
-        return "arbresd"; // Ceci correspondra au nom du fichier HTML (arbres-density.html)
+    public ResponseEntity<Map<String, Double>> getArbresDensityByArrondissement() {
+        Map<String, Double> densityMap = i.calculateArbresDensityByQuartier();
+        return ResponseEntity.ok(densityMap);
     }
 
     @PostMapping("/ajouter")
@@ -97,5 +97,23 @@ public class RestController {
         List<Object[]> especesCount = i.countArbresByEspece();
         model.addAttribute("especesCount", especesCount);
         return "dis"; // Nom de la vue HTML
+    }
+
+    @GetMapping("/arbres-genres-photos")
+    @ResponseBody
+    public List<Arbres> getArbresGenresAndPhotos() {
+        return i.getAllGenresAndPhotos();
+    }
+
+    @GetMapping("/pie-chart")
+    public ResponseEntity<Map<String, Object>> generatePieChart() {
+        Map<String, Object> data = new HashMap<>();
+        List<String> genres = i.getAllGenres();
+        List<Long> counts = i.getCountByGenre();
+
+        data.put("genres", genres);
+        data.put("counts", counts);
+
+        return ResponseEntity.ok(data);
     }
 }

@@ -19,4 +19,10 @@ public interface IService {
 
     void deleteArbreByArbresIdbase(BigDecimal arbresIdbase);
     public List<Object[]> countArbresByEspece();
+
+    public List<Arbres> getAllGenresAndPhotos();
+
+    public List<String> getAllGenres();
+    public List<Long> getCountByGenre();
+
 }
